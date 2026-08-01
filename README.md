@@ -11,39 +11,50 @@ All sprites are taken from https://github.com/AscenderTeam/Hyprchan/
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Hyprland](https://img.shields.io/badge/Hyprland-CC1111?style=for-the-badge&logo=linux&logoColor=white)](https://hyprland.org/)
 
-## Requirements
-- PyQt6
-- XWayland support on Linux systems
+# Visuals
 
-Install dependencies:
+<div align="center">
+  <table border="0">
+    <tr>
+      <td width="50%">
+        <img src="https://github.com/b42h4n/Hyprchan/blob/main/sprites/screenshot.png" width="100%" alt="screenshot 1">
+        <p align="center"><i>Animated Hyprland overlay with tool-calling capabilities.</i></p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+## Quick start
+
+Installing requirements:
 
 ```shell
-pip install PyQt6
+sudo apt install python3 pip -y
+pip install PyQt6 --break-system-packages
+sudo apt install xwayland -y
 ```
+(Or
+```shell
+sudo pacman -S python3 python3-pip
+pip install PyQt6 pip install PyQt6 --break-system-packages
+sudo pacman -S xwayland
+```
+if you using arch or arch based)
 
-## Installation
-
-From the project root:
+Installing hyprchan from the project root:
 
 ```shell
 python src/install.py
 ```
 
-This adds an autostart entry so the mascot launches with your desktop session.
-
-## Running manually
+This adds an autostart entry so the mascot launches with your desktop session(Sway, i3, driftwm, hyprland, kde plasma support).
+If you don't wan't this on autostart for some reasons, you can run script manually:
 
 ```shell
 python src/main.py
 ```
 
-## Project structure
-
-```text
-.
-├── src/
-│   ├── main.py
-│   └── install.py
-├── sprites/
-└── README.md
-```
+## Features
+**Sleep & Dreaming:** Automatically falls asleep after a certain period.
+**Animations:** It is animated and has (so far) 4 animations!
+**Talking:** She can say different phrases and reminders. Convenient!
