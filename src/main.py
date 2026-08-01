@@ -21,7 +21,6 @@ from PyQt6.QtWidgets import (
 )
 
 # Hyprchan Mascot - A simple animated mascot for your desktop.
-# Please do not goon to this, it's too much sites with porn and this is not one of them, this is a simple mascot for your desktop, and it's not a virus or malware, it's just a simple animated mascot for your desktop.
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 ASSET_DIR = BASE_DIR / "sprites"
@@ -51,7 +50,11 @@ MESSAGES = ["i use arch btw",
             "btw, GNU/Linux is better than windows",
             "take a deep breath, it helps you staying calm", 
             "don't even try to jerking off, it's just a pixels, not a real girl",
-            "Richard Stallman been working at the computer most of his time, working hard, and succeeding for so long \nfor you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux"
+            "Richard Stallman been working at the computer most of his time\n, working hard, and succeeding for so long \nfor you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux",
+            "btw, sway is better than i3, and wayland is better than X11",
+            "btw, you should use a tiling window manager, it will make your life easier",
+            "if computer isn't obey, it's not your computer",
+            "i'm about to fall asleep..."
 ]
 
 def load_spritesheet(filepath, frame_count):
