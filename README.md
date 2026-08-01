@@ -55,6 +55,6 @@ python src/main.py
 ```
 
 ## Features
-**Sleep & Dreaming:** Automatically falls asleep after a certain period.
-**Animations:** It is animated and has (so far) 4 animations!
-**Talking:** She can say different phrases and reminders. Convenient!
+* **Sleep & Dreaming:** Automatically falls asleep after a certain period.
+* **Animations:** It is animated and has (so far) 4 animations!
+* **Talking:** She can say different phrases and reminders. Convenient!
