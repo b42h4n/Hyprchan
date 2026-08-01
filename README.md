@@ -18,7 +18,7 @@ All sprites are taken from https://github.com/AscenderTeam/Hyprchan/
     <tr>
       <td width="50%">
         <img src="https://github.com/b42h4n/Hyprchan/blob/main/sprites/screenshot.png" width="100%" alt="screenshot 1">
-        <p align="center"><i>Animated hyprland mascot with some features like dreaming.</i></p>
+        <p align="center"><i>HyprChan sitting on console</i></p>
       </td>
     </tr>
   </table>
