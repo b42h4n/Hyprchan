@@ -51,7 +51,8 @@ MESSAGES = ["i use arch btw",
             "btw, GNU/Linux is better than windows",
             "take a deep breath, it helps you staying calm", 
             "don't even try to jerking off, it's just a pixels, not a real girl",
-            "Richard Stallman been working at the computer most of his time, working hard, and succeeding for so long for you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux",]
+            "Richard Stallman been working at the computer most of his time, working hard, and succeeding for so long \nfor you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux"
+]
 
 def load_spritesheet(filepath, frame_count):
     if not os.path.exists(filepath):
@@ -180,7 +181,6 @@ class SettingsDialog(QDialog):
         except ValueError:
             pass
 
-
 class HyprlandMascot(QWidget):
 
     def __init__(self):
@@ -243,13 +243,15 @@ class HyprlandMascot(QWidget):
         self.sleep_recovery_timer.timeout.connect(self.recover_fatigue)
 
         self.message_timer = QTimer(self)
-        self.message_timer.setInterval(180000)
+        self.message_timer.setInterval(45000)  # edit this if you don't like that she talks too often
         self.message_timer.timeout.connect(self.show_random_message)
         self.message_timer.start()
 
         QTimer.singleShot(0, self.raise_)
 
     def show_random_message(self):
+        if self.state in (STATE_FALLING_ASLEEP, STATE_SLEEPING, STATE_WAKING_UP):
+            return
         msg = random.choice(MESSAGES)
         center_x = self.x() + (self.width() // 2)
         top_y = self.y()
@@ -335,7 +337,7 @@ class HyprlandMascot(QWidget):
 
     def increase_fatigue(self):
         if self.state in (STATE_IDLE_WAIT, STATE_IDLE_ANIM):
-            self.fatigue = min(100, self.fatigue + 1)
+            self.fatigue = min(100, self.fatigue + 10)
             if self.fatigue >= 100:
                 self.trigger_fall_asleep()
 
