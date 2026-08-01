@@ -21,7 +21,7 @@ from PyQt6.QtWidgets import (
 )
 
 # Hyprchan Mascot - A simple animated mascot for your desktop.
-# Please do not goon to this, it's too much sites with porn and this is not one of them, this is a simple mascot for your desktop.
+# Please do not goon to this, it's too much sites with porn and this is not one of them, this is a simple mascot for your desktop, and it's not a virus or malware, it's just a simple animated mascot for your desktop.
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 ASSET_DIR = BASE_DIR / "sprites"
@@ -337,7 +337,7 @@ class HyprlandMascot(QWidget):
 
     def increase_fatigue(self):
         if self.state in (STATE_IDLE_WAIT, STATE_IDLE_ANIM):
-            self.fatigue = min(100, self.fatigue + 10)
+            self.fatigue = min(100, self.fatigue + 10) # edit this if you don't like that she gets sleepy too fast
             if self.fatigue >= 100:
                 self.trigger_fall_asleep()
 
