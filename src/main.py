@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import random
 
 if "WAYLAND_DISPLAY" in os.environ and "QT_QPA_PLATFORM" not in os.environ:
@@ -18,24 +19,23 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from pathlib import Path
 
 # Hyprchan Mascot - A simple animated mascot for your desktop.
 # Please do not goon to this, it's too much sites with porn and this is not one of them, this is a simple mascot for your desktop, and it's not a virus or malware, it's just a simple animated mascot for your desktop.
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent 
 ASSET_DIR = BASE_DIR / "sprites"
 
-IDLE_FILE = os.path.join(ASSET_DIR, "sprites/sit.png")
+IDLE_FILE = os.path.join(ASSET_DIR, "sit.png")
 IDLE_COUNT = 8
 
-FALL_ASLEEP_FILE = os.path.join(ASSET_DIR, "sprites/fall_asleep.png")
+FALL_ASLEEP_FILE = os.path.join(ASSET_DIR, "fall_asleep.png")
 FALL_ASLEEP_COUNT = 7
 
-SLEEPING_FILE = os.path.join(ASSET_DIR, "sprites/sleeping.png")
+SLEEPING_FILE = os.path.join(ASSET_DIR, "sleeping.png")
 SLEEPING_COUNT = 16
 
-WAKEUP_FILE = os.path.join(ASSET_DIR, "sprites/wakeup.png")
+WAKEUP_FILE = os.path.join(ASSET_DIR, "wakeup.png")
 WAKEUP_COUNT = 16
 
 STATE_IDLE_WAIT = 0
