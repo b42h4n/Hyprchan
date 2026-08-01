@@ -2,6 +2,8 @@
 
 <img width="400" height="600" alt="hyprchan_present" src="https://github.com/b42h4n/Hyprchan/blob/main/sprites/icon.jpg" />
 
+## HyprChan!
+
 A lightweight desktop mascot for Hyprland written in Python with PyQt6. It sits on your desktop, animates, shows random remarks, and can be configured with a small set of visual and behavior options.
 
 All sprites are taken from https://github.com/AscenderTeam/Hyprchan/
