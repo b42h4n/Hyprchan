@@ -52,7 +52,7 @@ def main():
 
     if target_script is None:
         print(
-            f"[!] Error: {TARGET_SCRIPT_NAME} not found neither in root nor in 'src/'!"
+            f"[!] Error: {TARGET_SCRIPT_NAME} not found neither in root or in 'src/'!"
         )
         return
 
