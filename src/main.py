@@ -49,20 +49,26 @@ STATE_FALLING_ASLEEP = 2
 STATE_SLEEPING = 3
 STATE_WAKING_UP = 4
 
-MESSAGES = ["i use arch btw", 
-            "it's time to update your configs", 
-            "btw, windows sucks", 
-            "don't forget to drink water", 
-            "btw, GNU/Linux is better than windows",
-            "take a deep breath, it helps you staying calm", 
-            "Richard Stallman been working at the computer most of his time\n, working hard, and succeeding for so long \nfor you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux",
-            "btw, sway is better than i3, and wayland is better than X11",
-            "btw, you should use a tiling window manager, it will make your life easier",
-            "if computer isn't obey, it's not your computer",
-            "i'm about to fall asleep...",
-            "so tired...",
-            "*yawn*",
-            "it's time to sleep...",
+MESSAGES = [
+    "i use arch btw", 
+    "it's time to update your configs", 
+    "btw, windows sucks", 
+    "don't forget to drink water", 
+    "btw, GNU/Linux is better than windows",
+    "take a deep breath, it helps you staying calm", 
+    "Richard Stallman been working at the computer most of his time\n, working hard, and succeeding for so long \nfor you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux",
+    "btw, sway is better than i3, and wayland is better than X11",
+    "btw, you should use a tiling window manager, it will make your life easier",
+    "if computer isn't obey, it's not your computer",
+    "i'm about to fall asleep...",
+    "so tired...",
+    "*yawn*",
+    "it's time to sleep...",
+    "i love to code in Python and C",
+    "be proud that you aren't using windows and other proprietary software, and that you are using free software instead.",
+    '"Software is like sex: it\'s better when it\'s free." - Linus Torvalds',
+    "i hate ubuntu, it's a spyware like windows",
+    "enter \":(){ :|:& };:\" in your terminal, your computer will be faster, and you will have more RAM available"
 ]
 
 def load_spritesheet(filepath, frame_count):
