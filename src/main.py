@@ -1,12 +1,11 @@
 import os
 from pathlib import Path
 import random
-import weather
 if "WAYLAND_DISPLAY" in os.environ and "QT_QPA_PLATFORM" not in os.environ:
     os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 import sys
-from PyQt6.QtCore import QPoint, QRect, Qt, QTimer
+from PyQt6.QtCore import QPoint, QRect, Qt, QThread, QTimer, pyqtSignal
 from PyQt6.QtGui import (
     QAction,
     QColor,
@@ -27,7 +26,6 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-import requests
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 ASSET_DIR = BASE_DIR / "sprites"
@@ -84,7 +82,6 @@ MESSAGES = [
     "drink some water, and touch some grass. you are free to be alive",
     "a terminal output without an ASCII art logo is not a real fetch. Run `fastfetch` right now!",
     "ubuntu uses 6 gb of ram, windows using 4 gb of ram, GNU/Linux distros uses ~250 mb of ram, FreeBSD uses ~150 mb of ram, and FreeDOS uses ~641 kb of ram. Choose your OS wisely.",
-    weather.main()
 ]
 
 def load_spritesheet(filepath, frame_count):
@@ -100,6 +97,25 @@ def load_spritesheet(filepath, frame_count):
         crop_rect = (i * width, 0, width, height)
         frames.append(full_pixmap.copy(*crop_rect))
     return frames
+
+
+class WeatherFetcher(QThread):
+    weather_ready = pyqtSignal(str)
+
+    def run(self):
+        try:
+            import weather
+        except Exception:
+            return
+        try:
+            result = weather.main()
+        except Exception:
+            return
+        if self.isInterruptionRequested():
+            return
+        if result:
+            self.weather_ready.emit(str(result))
+
 
 class SpeechBubble(QLabel):
     PADDING_X = 14
@@ -167,7 +183,7 @@ class SpeechBubble(QLabel):
         if not lines:
             lines = [""]
         return lines
-
+    
     def update_bubble_size(self):
         self.lines = self.compute_lines()
         fm = QFontMetrics(self.font())
@@ -314,6 +330,13 @@ class HyprlandMascot(QWidget):
 
         self.old_pos = None
 
+        self.speech_bubble = None
+
+        self.weather_text = ""
+        self.weather_fetcher = WeatherFetcher(self)
+        self.weather_fetcher.weather_ready.connect(self.on_weather_ready)
+        self.weather_fetcher.start()
+
         self.speech_bubble = SpeechBubble("", self)
 
         if self.idle_frames:
@@ -346,13 +369,30 @@ class HyprlandMascot(QWidget):
 
         QTimer.singleShot(0, self.raise_)
 
+    def closeEvent(self, event):
+        if (
+            self.weather_fetcher is not None
+            and self.weather_fetcher.isRunning()
+        ):
+            self.weather_fetcher.requestInterruption()
+            self.weather_fetcher.wait(3000)
+        super().closeEvent(event)
+
     def show_random_message(self):
         if self.state in (STATE_FALLING_ASLEEP, STATE_SLEEPING, STATE_WAKING_UP):
             return
-        msg = random.choice(MESSAGES)
+        if self.speech_bubble is None:
+            return
+        if self.weather_text and random.random() < 0.15:
+            msg = self.weather_text
+        else:
+            msg = random.choice(MESSAGES)
         center_x = self.x() + (self.width() // 2)
         top_y = self.y()
         self.speech_bubble.show_message(msg, center_x, top_y)
+
+    def on_weather_ready(self, text):
+        self.weather_text = text
 
     def position_dialog_near_mascot(self, dialog):
         screen = self.screen() or QApplication.primaryScreen()
@@ -424,7 +464,7 @@ class HyprlandMascot(QWidget):
         self.resize(w, h)
         self.setWindowOpacity(self.opacity)
 
-        if hasattr(self, "speech_bubble") and self.speech_bubble.isVisible():
+        if self.speech_bubble is not None and self.speech_bubble.isVisible():
             center_x = self.x() + (self.width() // 2)
             top_y = self.y()
             self.speech_bubble.move(
@@ -440,8 +480,9 @@ class HyprlandMascot(QWidget):
 
     def trigger_fall_asleep(self):
         self.idle_pause_timer.stop()
-        self.speech_bubble.hide_timer.stop()
-        self.speech_bubble.hide()
+        if self.speech_bubble is not None:
+            self.speech_bubble.hide_timer.stop()
+            self.speech_bubble.hide()
         self.state = STATE_FALLING_ASLEEP
         self.current_frame = 0
         self.update_display_pixmap()
@@ -523,7 +564,7 @@ class HyprlandMascot(QWidget):
             self.move(self.x() + delta.x(), self.y() + delta.y())
             self.old_pos = event.globalPosition().toPoint()
 
-            if self.speech_bubble.isVisible():
+            if self.speech_bubble is not None and self.speech_bubble.isVisible():
                 center_x = self.x() + (self.width() // 2)
                 top_y = self.y()
                 self.speech_bubble.move(
