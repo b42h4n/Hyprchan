@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import random
-
+import weather
 if "WAYLAND_DISPLAY" in os.environ and "QT_QPA_PLATFORM" not in os.environ:
     os.environ["QT_QPA_PLATFORM"] = "xcb"
 
@@ -27,6 +27,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+import requests
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 ASSET_DIR = BASE_DIR / "sprites"
@@ -82,6 +83,8 @@ MESSAGES = [
     "check your posture: are you bending like a banana over your mechanical keyboard right now?",
     "drink some water, and touch some grass. you are free to be alive",
     "a terminal output without an ASCII art logo is not a real fetch. Run `fastfetch` right now!",
+    "ubuntu uses 6 gb of ram, windows using 4 gb of ram, GNU/Linux distros uses ~250 mb of ram, FreeBSD uses ~150 mb of ram, and FreeDOS uses ~641 kb of ram. Choose your OS wisely.",
+    weather.main()
 ]
 
 def load_spritesheet(filepath, frame_count):
@@ -97,7 +100,6 @@ def load_spritesheet(filepath, frame_count):
         crop_rect = (i * width, 0, width, height)
         frames.append(full_pixmap.copy(*crop_rect))
     return frames
-
 
 class SpeechBubble(QLabel):
     PADDING_X = 14
@@ -327,9 +329,9 @@ class HyprlandMascot(QWidget):
         self.idle_pause_timer.timeout.connect(self.start_idle_anim)
         self.idle_pause_timer.start()
 
-        # Timers for fatigue(30 seconds) and sleep recovery(1 second)
+        # Timers for fatigue(2 minutes) and sleep recovery(1 second)
         self.fatigue_inc_timer = QTimer(self)
-        self.fatigue_inc_timer.setInterval(30000)  # edit this if you don't like that she gets sleepy too fast
+        self.fatigue_inc_timer.setInterval(120000)
         self.fatigue_inc_timer.timeout.connect(self.increase_fatigue)
         self.fatigue_inc_timer.start()
 
@@ -438,6 +440,8 @@ class HyprlandMascot(QWidget):
 
     def trigger_fall_asleep(self):
         self.idle_pause_timer.stop()
+        self.speech_bubble.hide_timer.stop()
+        self.speech_bubble.hide()
         self.state = STATE_FALLING_ASLEEP
         self.current_frame = 0
         self.update_display_pixmap()
