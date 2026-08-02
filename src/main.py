@@ -6,8 +6,16 @@ if "WAYLAND_DISPLAY" in os.environ and "QT_QPA_PLATFORM" not in os.environ:
     os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 import sys
-from PyQt6.QtCore import QPoint, Qt, QTimer
-from PyQt6.QtGui import QAction, QPixmap
+from PyQt6.QtCore import QPoint, QRect, Qt, QTimer
+from PyQt6.QtGui import (
+    QAction,
+    QColor,
+    QFont,
+    QFontMetrics,
+    QPainter,
+    QPen,
+    QPixmap,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -19,8 +27,6 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
-# Hyprchan Mascot - A simple animated mascot for your desktop.
 
 BASE_DIR = Path(__file__).resolve().parent.parent 
 ASSET_DIR = BASE_DIR / "sprites"
@@ -49,12 +55,14 @@ MESSAGES = ["i use arch btw",
             "don't forget to drink water", 
             "btw, GNU/Linux is better than windows",
             "take a deep breath, it helps you staying calm", 
-            "don't even try to jerking off, it's just a pixels, not a real girl",
             "Richard Stallman been working at the computer most of his time\n, working hard, and succeeding for so long \nfor you to call the linux distros 'linux' and not 'GNU/Linux'? please respect him and call it GNU/Linux",
             "btw, sway is better than i3, and wayland is better than X11",
             "btw, you should use a tiling window manager, it will make your life easier",
             "if computer isn't obey, it's not your computer",
-            "i'm about to fall asleep..."
+            "i'm about to fall asleep...",
+            "so tired...",
+            "*yawn*",
+            "it's time to sleep...",
 ]
 
 def load_spritesheet(filepath, frame_count):
@@ -73,6 +81,15 @@ def load_spritesheet(filepath, frame_count):
 
 
 class SpeechBubble(QLabel):
+    PADDING_X = 14
+    PADDING_Y = 10
+    RADIUS = 12
+    MAX_WIDTH = 340
+    BG_COLOR = QColor(0, 0, 0, 170)
+    BORDER_COLOR = QColor(255, 255, 255, 60)
+    TEXT_COLOR = QColor(255, 255, 255)
+    lines = [""]
+
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.setWindowFlags(
@@ -86,28 +103,84 @@ class SpeechBubble(QLabel):
             Qt.WidgetAttribute.WA_TransparentForMouseEvents, True
         )
 
-        self.setStyleSheet(
-            """
-            QLabel {
-                background-color: rgba(0, 0, 0, 128);
-                color: white;
-                border-radius: 8px;
-                padding: 6px 12px;
-                font-weight: bold;
-                font-size: 12px;
-            }
-        """
-        )
-        self.adjustSize()
+        font = QFont()
+        font.setBold(True)
+        font.setPixelSize(12)
+        self.setFont(font)
+
+        self.update_bubble_size()
 
         self.hide_timer = QTimer(self)
         self.hide_timer.setSingleShot(True)
         self.hide_timer.setInterval(5000)
         self.hide_timer.timeout.connect(self.hide)
 
+    def compute_lines(self):
+        fm = QFontMetrics(self.font())
+        max_text_width = self.MAX_WIDTH - 2 * self.PADDING_X
+        lines = []
+        for raw_line in self.text().split("\n"):
+            current = ""
+            for word in raw_line.split(" "):
+                candidate = word if not current else f"{current} {word}"
+                if fm.horizontalAdvance(candidate) <= max_text_width:
+                    current = candidate
+                    continue
+                if current:
+                    lines.append(current)
+                    current = ""
+                remaining = word
+                while fm.horizontalAdvance(remaining) > max_text_width:
+                    idx = 1
+                    while (
+                        idx < len(remaining)
+                        and fm.horizontalAdvance(remaining[: idx + 1])
+                        <= max_text_width
+                    ):
+                        idx += 1
+                    lines.append(remaining[:idx])
+                    remaining = remaining[idx:]
+                current = remaining
+            if current:
+                lines.append(current)
+        if not lines:
+            lines = [""]
+        return lines
+
+    def update_bubble_size(self):
+        self.lines = self.compute_lines()
+        fm = QFontMetrics(self.font())
+        text_w = max(fm.horizontalAdvance(line) for line in self.lines)
+        text_h = fm.height() * len(self.lines)
+        self.resize(
+            text_w + 2 * self.PADDING_X,
+            text_h + 2 * self.PADDING_Y,
+        )
+
+    def setText(self, text):
+        super().setText(text)
+        self.update_bubble_size()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        rect = QRect(0, 0, self.width(), self.height()).adjusted(
+            1, 1, -1, -1
+        )
+        painter.setPen(QPen(self.BORDER_COLOR, 1))
+        painter.setBrush(self.BG_COLOR)
+        painter.drawRoundedRect(rect, self.RADIUS, self.RADIUS)
+
+        painter.setPen(self.TEXT_COLOR)
+        fm = QFontMetrics(self.font())
+        y = self.PADDING_Y + fm.ascent()
+        for line in self.lines:
+            painter.drawText(self.PADDING_X, y, line)
+            y += fm.height()
+
     def show_message(self, text, x, y):
         self.setText(text)
-        self.adjustSize()
         bubble_x = x - (self.width() // 2)
         bubble_y = y - self.height() - 8
         self.move(bubble_x, bubble_y)
@@ -488,7 +561,6 @@ class HyprlandMascot(QWidget):
     def set_opacity_val(self, val):
         self.opacity = float(val)
         self.setWindowOpacity(self.opacity)
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
