@@ -82,6 +82,7 @@ MESSAGES = [
     "drink some water, and touch some grass. you are free to be alive",
     "a terminal output without an ASCII art logo is not a real fetch. Run `fastfetch` right now!",
     "ubuntu uses 6 gb of ram, windows using 4 gb of ram, GNU/Linux distros uses ~250 mb of ram, FreeBSD uses ~150 mb of ram, and FreeDOS uses ~641 kb of ram. Choose your OS wisely.",
+    "type \"linux\" in duckduckgo search, and you will see stylyzed ddg logo",
 ]
 
 def load_spritesheet(filepath, frame_count):
@@ -97,7 +98,6 @@ def load_spritesheet(filepath, frame_count):
         crop_rect = (i * width, 0, width, height)
         frames.append(full_pixmap.copy(*crop_rect))
     return frames
-
 
 class WeatherFetcher(QThread):
     weather_ready = pyqtSignal(str)
@@ -115,7 +115,6 @@ class WeatherFetcher(QThread):
             return
         if result:
             self.weather_ready.emit(str(result))
-
 
 class SpeechBubble(QLabel):
     PADDING_X = 14
@@ -183,7 +182,7 @@ class SpeechBubble(QLabel):
         if not lines:
             lines = [""]
         return lines
-    
+
     def update_bubble_size(self):
         self.lines = self.compute_lines()
         fm = QFontMetrics(self.font())
@@ -225,9 +224,7 @@ class SpeechBubble(QLabel):
         self.raise_()
         self.hide_timer.start()
 
-
 class SettingsDialog(QDialog):
-
     def __init__(
         self, title, initial_val, min_val, max_val, callback, parent=None
     ):
